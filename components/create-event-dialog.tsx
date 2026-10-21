@@ -85,9 +85,9 @@ export function CreateEventDialog({ venues, groups, initial, bucketItemId }: Pro
 
   return (
     <Dialog open={open} onOpenChange={(next) => !next && router.push("/", { scroll: false })}>
-      <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="max-h-[90dvh] overflow-y-auto rounded-card sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>New event</DialogTitle>
+          <DialogTitle className="display text-3xl">New event</DialogTitle>
           <DialogDescription>You&apos;re counted as going. Times are Manila time.</DialogDescription>
         </DialogHeader>
 
@@ -226,8 +226,8 @@ export function CreateEventDialog({ venues, groups, initial, bucketItemId }: Pro
           )}
 
           <DialogFooter>
-            <DialogClose render={<Button type="button" variant="outline" />}>Cancel</DialogClose>
-            <Button type="submit" disabled={pending}>
+            <DialogClose render={<Button type="button" variant="ghost" className="rounded-full" />}>Cancel</DialogClose>
+            <Button type="submit" disabled={pending} className="rounded-full px-5">
               {pending ? "Creating…" : "Create event"}
             </Button>
           </DialogFooter>

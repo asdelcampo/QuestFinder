@@ -5,7 +5,6 @@ import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { addBucketItem, checkOffBucketItem, deleteBucketItem, type FormState } from "@/app/actions/profile";
 import { selectClassName } from "@/components/level-form";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,10 +21,10 @@ export type BucketListItem = {
 
 type Venue = { id: string; name: string; neighborhood: string };
 
-const STATUS_BADGE = {
-  wishlist: { label: "Wishlist", variant: "outline" },
-  planned: { label: "Planned", variant: "secondary" },
-  done: { label: "Done", variant: "default" },
+const STATUS_PILL = {
+  wishlist: { label: "Wishlist", className: "border border-border bg-white/70 text-muted-foreground" },
+  planned: { label: "Planned", className: "bg-secondary text-secondary-foreground" },
+  done: { label: "Done", className: "bg-check-mint/20 text-[#04704c]" },
 } as const;
 
 export function BucketList({ items, venues }: { items: BucketListItem[]; venues: Venue[] }) {
@@ -34,56 +33,70 @@ export function BucketList({ items, venues }: { items: BucketListItem[]; venues:
       {items.length === 0 ? (
         <p className="text-sm text-muted-foreground">Add your first side quest.</p>
       ) : (
-        <ul className="flex flex-col divide-y rounded-xl border">
+        <ul className="flex flex-col gap-3">
           {items.map((item) => (
             <BucketRow key={item.id} item={item} />
           ))}
         </ul>
       )}
-      <AddItemForm venues={venues} />
+      <div className="glass rounded-3xl p-4">
+        <AddItemForm venues={venues} />
+      </div>
     </div>
   );
 }
 
 function BucketRow({ item }: { item: BucketListItem }) {
-  const badge = STATUS_BADGE[item.status];
+  const pill = STATUS_PILL[item.status];
   return (
-    <li className="flex flex-col gap-2 p-3">
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="font-medium">{item.title}</span>
-        <Badge variant={badge.variant}>{badge.label}</Badge>
-      </div>
-      {item.venueName && <p className="text-sm text-muted-foreground">{item.venueName}</p>}
-      {item.event && (
-        // Feed cards carry id="event-<id>", so this scrolls to the event
-        <Link href={`/#event-${item.event.id}`} className="text-sm underline underline-offset-4">
-          {item.event.activity} · {formatWhen(item.event.startsAt)}
-        </Link>
-      )}
-
-      {item.canCheckOff && (
-        <form action={checkOffBucketItem} className="flex flex-wrap items-center gap-2">
-          <input type="hidden" name="id" value={item.id} />
-          <span className="text-sm">Did you do it?</span>
-          <SubmitButton size="sm" pendingLabel="Checking off…">
-            Check off
-          </SubmitButton>
-        </form>
-      )}
-
-      <div className="flex flex-wrap items-center gap-2">
-        {item.status === "wishlist" && (
-          // The feed opens Create Event pre-filled from this item and marks it planned on submit
-          <Button size="sm" render={<Link href={`/?new=1&bucket=${item.id}`} />} nativeButton={false}>
-            Make it happen
-          </Button>
+    <li className="glass flex gap-4 rounded-3xl p-4">
+      {/* Done items get Bump's mint "visited" check on the sticker (DESIGN.md §6.5) */}
+      <span aria-hidden className="relative h-fit text-4xl leading-none">
+        <span className="sticker">🎯</span>
+        {item.status === "done" && (
+          <span className="pop-in absolute -right-2 -bottom-1 flex size-5 items-center justify-center rounded-full border-2 border-white bg-check-mint text-[11px] font-black text-white">
+            ✓
+          </span>
         )}
-        <form action={deleteBucketItem}>
-          <input type="hidden" name="id" value={item.id} />
-          <SubmitButton size="sm" variant="ghost" pendingLabel="Deleting…">
-            Delete
-          </SubmitButton>
-        </form>
+      </span>
+
+      <div className="flex min-w-0 flex-1 flex-col gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-lg font-semibold">{item.title}</span>
+          <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${pill.className}`}>{pill.label}</span>
+        </div>
+        {item.venueName && <p className="text-sm font-semibold text-primary">{item.venueName}</p>}
+        {item.event && (
+          // Feed cards carry id="event-<id>", so this scrolls to the event
+          <Link href={`/#event-${item.event.id}`} className="text-sm text-periwinkle underline-offset-4 hover:underline">
+            {item.event.activity} · {formatWhen(item.event.startsAt)}
+          </Link>
+        )}
+
+        {item.canCheckOff && (
+          <form action={checkOffBucketItem} className="flex flex-wrap items-center gap-2">
+            <input type="hidden" name="id" value={item.id} />
+            <span className="text-sm font-semibold">Did you do it?</span>
+            <SubmitButton size="sm" className="rounded-full" pendingLabel="Checking off…">
+              Check off
+            </SubmitButton>
+          </form>
+        )}
+
+        <div className="flex flex-wrap items-center gap-2">
+          {item.status === "wishlist" && (
+            // The feed opens Create Event pre-filled from this item and marks it planned on submit
+            <Button size="sm" className="rounded-full" render={<Link href={`/?new=1&bucket=${item.id}`} />} nativeButton={false}>
+              Make it happen
+            </Button>
+          )}
+          <form action={deleteBucketItem}>
+            <input type="hidden" name="id" value={item.id} />
+            <SubmitButton size="sm" variant="ghost" className="rounded-full" pendingLabel="Deleting…">
+              Delete
+            </SubmitButton>
+          </form>
+        </div>
       </div>
     </li>
   );

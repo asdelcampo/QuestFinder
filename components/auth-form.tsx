@@ -51,7 +51,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
         </p>
       )}
 
-      <Button type="submit" disabled={pending}>
+      <Button type="submit" disabled={pending} size="lg" className="h-11 rounded-full text-base">
         {pending ? "Please wait…" : mode === "signup" ? "Sign up" : "Log in"}
       </Button>
 
