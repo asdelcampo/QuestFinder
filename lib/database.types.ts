@@ -291,7 +291,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      cancel_rsvp: { Args: { p_event: string }; Returns: undefined }
+      rsvp: {
+        Args: { p_event: string }
+        Returns: Database["public"]["Enums"]["rsvp_status"]
+      }
     }
     Enums: {
       bucket_status: "wishlist" | "planned" | "done"
