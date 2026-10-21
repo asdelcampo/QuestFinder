@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "vitest run --passWithNoTests"
+    "test": "vitest run --passWithNoTests",
+    "db:types": "supabase gen types typescript --linked --schema public > lib/database.types.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
