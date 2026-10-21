@@ -12,13 +12,17 @@ on conflict (id) do update set
   description = excluded.description,
   auto_join = excluded.auto_join;
 
--- TODO(author): fill lat/lng from Google Maps (right-click the pin → copy coordinates).
--- Never guess coordinates, prices, or ratings. Venues without coordinates are skipped on the map.
--- TODO(author): add the other ~6 venues (a café, a park or free spot, a food spot for the
--- Food Crawl Crew, and a gym with roped climbing), each with a fixed id in the b1… range.
+-- TODO(author): fill lat/lng for every venue from Google Maps (right-click the pin → copy
+-- coordinates). Never guess coordinates, prices, or ratings. Venues without coordinates are
+-- skipped on the map.
 insert into public.venues (id, name, neighborhood, category, lat, lng) values
   ('b1000000-0000-4000-8000-000000000001', 'Po & Pilar', 'Makati', 'food', null, null),
-  ('b1000000-0000-4000-8000-000000000002', 'Bouldering Hive', 'Greenhills', 'climbing', null, null)
+  ('b1000000-0000-4000-8000-000000000002', 'Bouldering Hive', 'Greenhills', 'climbing', null, null),
+  ('b1000000-0000-4000-8000-000000000003', 'Climb Central Manila', 'Greenfield, Mandaluyong', 'climbing', null, null),
+  ('b1000000-0000-4000-8000-000000000004', 'Automat', 'Karrivin Plaza, Makati', 'food', null, null),
+  ('b1000000-0000-4000-8000-000000000005', 'Ayala Triangle Gardens', 'Makati', 'park', null, null),
+  ('b1000000-0000-4000-8000-000000000006', 'The Brewman Coffee', 'Cubao Expo, Quezon City', 'cafe', null, null),
+  ('b1000000-0000-4000-8000-000000000007', 'The Black Bean', 'Makati', 'cafe', null, null)
 on conflict (id) do update set
   name = excluded.name,
   neighborhood = excluded.neighborhood,
