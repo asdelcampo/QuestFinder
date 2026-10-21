@@ -1,18 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import { SiteHeader } from "@/components/site-header";
+import { Archivo, Figtree, JetBrains_Mono } from "next/font/google";
+import { Dock } from "@/components/dock";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+// Free stand-ins for Bump's faces (DESIGN.md §3): Figtree for UI text, Archivo's width axis for
+// compressed display type, JetBrains Mono for mono labels
+const figtree = Figtree({ variable: "--font-sans", subsets: ["latin"] });
+const archivo = Archivo({ variable: "--font-display", subsets: ["latin"], axes: ["wdth"] });
+const mono = JetBrains_Mono({ variable: "--font-mono", subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: { default: "QuestFinder", template: "%s · QuestFinder" },
@@ -21,14 +17,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="min-h-full flex flex-col">
-        <SiteHeader />
+    <html lang="en" className={`${figtree.variable} ${archivo.variable} ${mono.variable} h-full antialiased`}>
+      <body className="flex min-h-full flex-col">
         {children}
-        <Toaster />
+        <Dock />
+        <Toaster position="top-center" />
       </body>
     </html>
   );
