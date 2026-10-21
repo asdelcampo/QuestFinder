@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { eventEmoji } from "@/lib/emoji";
 import { formatPeso, formatWhen } from "@/lib/format";
 import type { FeedEvent } from "@/lib/queries";
 import { recommend, type RecommendationContext } from "@/lib/recommend";
@@ -19,12 +20,12 @@ export function Recommendations({ events, context, limit, title, emptyText }: Pr
 
   return (
     <section className="flex flex-col gap-3" aria-labelledby="recommendations-title">
-      <h2 id="recommendations-title" className="text-lg font-semibold">
+      <h2 id="recommendations-title" className="display text-3xl">
         {title}
       </h2>
       {context.level === null && (
         <p className="text-sm text-muted-foreground">
-          <Link href="/profile#level" className="underline underline-offset-4">
+          <Link href="/profile#level" className="font-semibold text-primary underline-offset-4 hover:underline">
             Set your level
           </Link>{" "}
           for better picks.
@@ -33,16 +34,20 @@ export function Recommendations({ events, context, limit, title, emptyText }: Pr
       {picks.length === 0 ? (
         <p className="text-sm text-muted-foreground">{emptyText}</p>
       ) : (
-        <ul className="flex flex-col divide-y rounded-xl border">
+        // A sideways strip of glass tiles; the -mx/px lets them scroll to the screen edge
+        <ul className="-mx-4 flex snap-x gap-3 overflow-x-auto px-4 pt-1 pb-3 [scrollbar-width:none]">
           {picks.map(({ event, reason }) => (
-            <li key={event.id} className="flex flex-col gap-1 p-3">
-              <Link href={`/#event-${event.id}`} className="font-medium underline-offset-4 hover:underline">
-                {event.activity}
+            <li key={event.id} className="glass w-60 shrink-0 snap-start rounded-3xl p-4">
+              <Link href={`/#event-${event.id}`} className="flex flex-col gap-2">
+                <span aria-hidden className="sticker text-3xl leading-none">
+                  {eventEmoji(event.session_type, event.venue.category)}
+                </span>
+                <span className="display text-xl">{event.activity}</span>
+                <span className="text-sm text-muted-foreground">
+                  {formatWhen(event.starts_at)} · {formatPeso(event.price_per_person)}
+                </span>
+                <span className="text-sm font-semibold text-primary">{reason}</span>
               </Link>
-              <p className="text-sm text-muted-foreground">
-                {event.venue.name} · {formatWhen(event.starts_at)} · {formatPeso(event.price_per_person)}
-              </p>
-              <p className="text-sm text-primary">{reason}</p>
             </li>
           ))}
         </ul>

@@ -11,8 +11,15 @@ import { createClient } from "@/lib/supabase/server";
 // are request-time data, so everything that reads them streams in behind a <Suspense> boundary.
 export default function HomePage({ searchParams }: PageProps<"/">) {
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-4 px-4 py-8">
-      <h1 className="text-2xl font-semibold">Upcoming events</h1>
+    // Bottom padding keeps the last card clear of the floating dock
+    <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col gap-6 px-4 pt-10 pb-36">
+      <header className="flex flex-col gap-2">
+        {/* One blue word per headline (DESIGN.md §3.3) */}
+        <h1 className="display text-5xl sm:text-6xl">
+          What&apos;s <span className="text-primary">happening</span>
+        </h1>
+        <p className="text-muted-foreground">Upcoming events from your crew and around Manila.</p>
+      </header>
       <Suspense fallback={<p className="text-sm text-muted-foreground">Loading events…</p>}>
         <Feed />
       </Suspense>
@@ -32,13 +39,19 @@ async function Feed() {
   ]);
 
   if (events.length === 0) {
-    return <p className="text-muted-foreground">No upcoming events</p>;
+    return (
+      <div className="glass flex flex-col items-center gap-2 rounded-card p-8 text-center">
+        <span aria-hidden className="sticker text-5xl">🗓️</span>
+        <p className="display text-2xl">No upcoming events</p>
+        <p className="text-muted-foreground">Nothing here yet. Start something?</p>
+      </div>
+    );
   }
   return (
     <>
       {/* Hides itself when nothing scores */}
       <Recommendations events={events} context={context} limit={3} title="For you" />
-      <ul className="flex flex-col gap-4">
+      <ul className="flex flex-col gap-6">
         {events.map((event) => (
           <li key={event.id}>
             <EventCard event={event} userId={user.id} />
